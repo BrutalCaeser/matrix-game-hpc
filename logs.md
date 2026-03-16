@@ -252,3 +252,33 @@ python -c "import pipeline; import wan; import utils; print('All imports OK')"
 ### [DECISION] Skip login-node import test
 Import correctness will be validated implicitly when the batch job runs on a GPU node.
 Proceeding to weight download (Phase 2.9).
+
+### [USER] Downloaded model weights (Phase 2.9)
+```bash
+python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='Skywork/Matrix-Game-2.0', local_dir='/scratch/gupta.yashv/matrix-game/Matrix-Game-2.0')"
+```
+Note: `huggingface-cli` command not found even after `pip install huggingface_hub[cli]` — used Python API directly.
+**[RESULT] PASS** — Weights downloaded to `/scratch/gupta.yashv/matrix-game/Matrix-Game-2.0/`
+
+Confirmed files:
+| File | Size | Purpose |
+|------|------|---------|
+| `Wan2.1_VAE.pth` | 485M | VAE decoder |
+| `models_clip_open-clip-xlm-roberta-large-vit-huge-14.pth` | 4.5G | CLIP encoder |
+| `base_model/diffusion_pytorch_model.safetensors` | 3.4G | Base model (no distillation) |
+| `base_distilled_model/base_distill.safetensors` | 6.1G | Universal distilled model |
+| `gta_distilled_model/gta_keyboard2dim.safetensors` | 6.1G | GTA game variant |
+| `templerun_distilled_model/templerun_7dim_onlykey.safetensors` | 5.7G | Temple Run variant |
+
+### [ARCH] Config → Checkpoint mapping confirmed (from local repo analysis)
+| Config | Checkpoint | Notes |
+|--------|-----------|-------|
+| `inference_universal.yaml` | `base_distilled_model/base_distill.safetensors` | Keyboard + mouse, universal scenes |
+| `inference_gta_drive.yaml` | `gta_distilled_model/gta_keyboard2dim.safetensors` | GTA driving |
+| `inference_templerun.yaml` | `templerun_distilled_model/templerun_7dim_onlykey.safetensors` | Temple Run |
+
+**Batch test will use:** `inference_universal.yaml` + `base_distilled_model/base_distill.safetensors`
+
+### [ARCH] Created SLURM batch script (Phase 4)
+File: `/scratch/gupta.yashv/matrix-game/test_run.sh`
+Test image: `demo_images/universal/0000.png` copied to `/scratch/gupta.yashv/matrix-game/test_image.png`
