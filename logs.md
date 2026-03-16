@@ -136,3 +136,13 @@ pip install torch==2.4.0 torchvision==0.19.0 --index-url https://download.pytorc
 python -c "import torch; print(torch.__version__)"  →  2.4.0+cu121
 ```
 **[RESULT] PASS** — PyTorch 2.4.0+cu121 confirmed.
+
+### [USER] Cloned repo (Phase 2.7)
+```bash
+cd /scratch/gupta.yashv/matrix-game
+git clone https://github.com/SkyworkAI/Matrix-Game.git
+ls Matrix-Game/Matrix-Game-2/
+→  README.md  assets  configs  demo_images  demo_utils  inference.py
+   inference_streaming.py  pipeline  requirements.txt  setup.py  utils  wan
+```
+**[RESULT] PASS** — All required files and directories present.
