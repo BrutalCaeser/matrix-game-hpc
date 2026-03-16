@@ -183,4 +183,13 @@ Updated `load_matrix_env.sh` logic accordingly.
 pip install flash-attn --no-build-isolation --cache-dir /scratch/gupta.yashv/pip-cache
 ```
 Redirected pip cache to scratch to avoid cross-device link error and home disk pressure.
-**[STATUS]** Awaiting result.
+**[STATUS]** ~~Awaiting result.~~
+
+### [USER] flash-attn install — Attempt 4 (direct wheel download)
+```bash
+cd /scratch/gupta.yashv/matrix-game
+wget https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+pip install flash_attn-2.8.3+cu12torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+```
+**[RESULT] PASS** — flash-attn 2.8.3 installed successfully.
+**[FIX]** Bypassed pip's wheel build/cache pipeline entirely by downloading the pre-built wheel directly and installing from local file. Avoids cross-device link error caused by pip temp dir and cache dir being on different mount points.
