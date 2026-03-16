@@ -62,9 +62,10 @@ I am the solutions architect and programmer guiding this project.
 
 ```bash
 # ~/load_matrix_env.sh — exact content required
+# WARNING: Never use $(conda info --base) — gets Killed on this cluster
 module load cuda/12.1.1
 module load anaconda3/2024.06
-source $(conda info --base)/etc/profile.d/conda.sh
+source /shared/EL9/explorer/anaconda3/2024.06/etc/profile.d/conda.sh
 conda activate /scratch/gupta.yashv/matrix-game/conda-envs/matrix-game-2.0
 ```
 

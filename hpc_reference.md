@@ -30,8 +30,9 @@ source $(conda info --base)/etc/profile.d/conda.sh
 conda activate /scratch/gupta.yashv/matrix-game/conda-envs/matrix-game-2.0
 
 # Manual conda activation (if load_matrix_env.sh fails)
+# WARNING: Never use $(conda info --base) — gets Killed on this cluster
 module load anaconda3/2024.06
-source $(conda info --base)/etc/profile.d/conda.sh
+source /shared/EL9/explorer/anaconda3/2024.06/etc/profile.d/conda.sh
 conda activate /scratch/gupta.yashv/matrix-game/conda-envs/matrix-game-2.0
 ```
 

@@ -146,3 +146,41 @@ ls Matrix-Game/Matrix-Game-2/
    inference_streaming.py  pipeline  requirements.txt  setup.py  utils  wan
 ```
 **[RESULT] PASS** — All required files and directories present.
+
+### [USER] flash-attn install — Attempt 1 (Phase 2.4)
+```bash
+pip install flash-attn --no-build-isolation
+```
+**[RESULT] FAIL** — `ModuleNotFoundError: No module named 'psutil'` during metadata generation.
+
+### [USER] Fixed missing psutil
+```bash
+pip install psutil
+```
+**[RESULT] PASS** — psutil installed.
+
+### [USER] flash-attn install — Attempt 2
+```bash
+pip install flash-attn --no-build-isolation
+```
+**[RESULT] FAIL** — `[Errno 18] Invalid cross-device link`
+- pip tried to move downloaded wheel from scratch temp dir → `/home/gupta.yashv/.cache/pip/wheels/`
+- Home (`/home`) and scratch are different filesystems — cross-device rename not allowed
+- Home is also 97% full — pip cache cannot live there
+- **Note:** pip found a pre-built wheel (`flash_attn-2.8.3+cu12torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl`) — no compilation needed, just a download
+
+### [ARCH] Diagnosis — conda source path issue
+On explorer-01, `conda info --base` was `Killed` by the system (too heavy for login node process limits).
+Fix: source conda.sh using the known hardcoded base path directly:
+```bash
+source /shared/EL9/explorer/anaconda3/2024.06/etc/profile.d/conda.sh
+```
+**[DECISION]** Always use the hardcoded path — never rely on `$(conda info --base)` on this cluster.
+Updated `load_matrix_env.sh` logic accordingly.
+
+### [USER] flash-attn install — Attempt 3 (in progress)
+```bash
+pip install flash-attn --no-build-isolation --cache-dir /scratch/gupta.yashv/pip-cache
+```
+Redirected pip cache to scratch to avoid cross-device link error and home disk pressure.
+**[STATUS]** Awaiting result.
