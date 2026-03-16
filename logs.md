@@ -128,4 +128,11 @@ python --version  →  Python 3.10.20
 
 ### [ARCH] Git repo initialized locally
 Initialized git repo in `/Volumes/Crucial_X9/Projects/Matrix_2d/` to track project docs (CLAUDE.md, build_plan.md, logs.md, hpc_reference.md, hpc_gpu_inventory.md).
-Staged initial files for first commit.
+Created GitHub repo: https://github.com/BrutalCaeser/matrix-game-hpc
+
+### [USER] Installed PyTorch (Phase 2.3)
+```bash
+pip install torch==2.4.0 torchvision==0.19.0 --index-url https://download.pytorch.org/whl/cu121
+python -c "import torch; print(torch.__version__)"  →  2.4.0+cu121
+```
+**[RESULT] PASS** — PyTorch 2.4.0+cu121 confirmed.
