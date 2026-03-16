@@ -217,7 +217,7 @@ scontrol show node d3146
 # Verify Python version (must be 3.10.x)
 python --version
 
-# Verify PyTorch (must be 2.4.0+cu121)
+# Verify PyTorch (must be 2.5.1+cu121 — 2.4.x lacks flex_attention used by model)
 python -c "import torch; print(torch.__version__)"
 
 # Verify CUDA available to PyTorch
@@ -229,12 +229,13 @@ python -c "import flash_attn; print(flash_attn.__version__)"
 # Verify all key imports
 python -c "import pipeline; import wan; import utils; print('All imports OK')"
 
-# Install PyTorch (exact version required)
-pip install torch==2.4.0 torchvision==0.19.0 --index-url https://download.pytorch.org/whl/cu121
+# Install PyTorch (exact version required — 2.4.x will fail, model needs flex_attention)
+pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu121
 
-# Install flash-attn (must have cuda/12.1.1 loaded first — takes 15-30 min)
-module load cuda/12.1.1
-pip install flash-attn --no-build-isolation
+# Install flash-attn (use pre-built wheel to avoid cross-device link errors)
+# Download to scratch first, then install from local file:
+wget https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-cp310-cp310-linux_x86_64.whl -P /scratch/gupta.yashv/matrix-game/
+pip install /scratch/gupta.yashv/matrix-game/flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
 
 # Install repo in dev mode (run from Matrix-Game-2 directory)
 cd /scratch/gupta.yashv/matrix-game/Matrix-Game/Matrix-Game-2

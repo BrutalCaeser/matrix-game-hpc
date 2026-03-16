@@ -193,3 +193,49 @@ pip install flash_attn-2.8.3+cu12torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.
 ```
 **[RESULT] PASS** — flash-attn 2.8.3 installed successfully.
 **[FIX]** Bypassed pip's wheel build/cache pipeline entirely by downloading the pre-built wheel directly and installing from local file. Avoids cross-device link error caused by pip temp dir and cache dir being on different mount points.
+
+### [USER] Installed remaining packages (Phase 2.5)
+```bash
+pip install opencv-python diffusers "transformers>=4.49.0" ...torchao... (full list)
+pip install git+https://github.com/openai/CLIP.git
+python setup.py develop
+```
+**[RESULT] PASS** — all packages installed, repo installed in dev mode.
+
+### [USER] Import test — Attempt 1
+```bash
+python -c "import pipeline; import wan; import utils; print('All imports OK')"
+```
+**[RESULT] FAIL** — `AttributeError: module 'torch' has no attribute 'int1'`
+- `torchao 0.16.0` requires `torch.int1` which only exists in PyTorch 2.5+
+- We had PyTorch 2.4.0
+
+### [USER] Downgraded torchao to 0.5.0
+```bash
+pip install torchao==0.5.0
+```
+**[RESULT] PARTIAL** — torchao/diffusers error resolved, but new error:
+
+### [USER] Import test — Attempt 2
+```bash
+python -c "import pipeline; import wan; import utils; print('All imports OK')"
+```
+**[RESULT] FAIL** — `ModuleNotFoundError: No module named 'torch.nn.attention.flex_attention'`
+- `wan/modules/action_module.py` imports `flex_attention` which was added in PyTorch 2.5.0
+- Root cause: **PyTorch 2.4.0 is insufficient** — the model itself requires PyTorch ≥2.5.0
+- Previous constraint "PyTorch must be 2.4.0" was wrong — updating to 2.5.1
+
+### [DECISION] Upgrade PyTorch to 2.5.1 + matching flash-attn wheel
+- PyTorch 2.4.0 → 2.5.1+cu121
+- flash-attn wheel: swap `torch2.4` → `torch2.5` build
+- torchao: upgrade from 0.5.0 → 0.7.0 (compatible with torch 2.5)
+
+### [USER] Upgrading PyTorch + flash-attn + torchao (in progress)
+```bash
+pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu121
+pip uninstall flash-attn -y
+wget https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-cp310-cp310-linux_x86_64.whl -P /scratch/gupta.yashv/matrix-game/
+pip install /scratch/gupta.yashv/matrix-game/flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+pip install torchao==0.7.0
+```
+**[STATUS]** Awaiting result.

@@ -53,7 +53,7 @@ I am the solutions architect and programmer guiding this project.
 4. **`torch.compile` warmup takes 5–10 min on first run.** Never kill the process during this.
 5. **All data, weights, envs, and outputs go to `/scratch/gupta.yashv/`.**
 6. **Python version must be 3.10.x** in the conda env.
-7. **PyTorch must be 2.4.0+cu121** — exact version for flash-attn compatibility.
+7. **PyTorch must be 2.5.1+cu121** — model uses `flex_attention` (added in 2.5.0); flash-attn 2.8.3 has a matching torch2.5 wheel.
 8. **CUDA module must be `cuda/12.1.1`** — loaded before flash-attn install and at runtime.
 
 ---
@@ -75,9 +75,9 @@ conda activate /scratch/gupta.yashv/matrix-game/conda-envs/matrix-game-2.0
 
 | Package | Required Version | Notes |
 |---------|-----------------|-------|
-| torch | 2.4.0+cu121 | Install from pytorch whl index |
-| torchvision | 0.19.0+cu121 | Same index as torch |
-| flash-attn | latest | Requires cuda/12.1.1 loaded at build time |
+| torch | 2.5.1+cu121 | Install from pytorch whl index; 2.4.x insufficient (no flex_attention) |
+| torchvision | 0.20.1+cu121 | Same index as torch |
+| flash-attn | 2.8.3 | Use pre-built wheel: flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-cp310-cp310-linux_x86_64.whl |
 | transformers | ≥4.49.0 | |
 | diffusers | latest | |
 | accelerate | ≥1.1.1 | |
