@@ -238,4 +238,17 @@ wget https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash
 pip install /scratch/gupta.yashv/matrix-game/flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
 pip install torchao==0.7.0
 ```
-**[STATUS]** Awaiting result.
+**[RESULT] PASS** — PyTorch 2.5.1+cu121 installed, flash-attn 2.8.3 (torch2.5 wheel) installed, torchao 0.7.0 installed.
+
+### [USER] Import test — Attempt 3
+```bash
+python -c "import pipeline; import wan; import utils; print('All imports OK')"
+```
+**[RESULT] EXPECTED FAILURE (login node)** — `RuntimeError: Found no NVIDIA driver on your system`
+- `wan/modules/t5.py` line 478 calls `torch.cuda.current_device()` at class definition time
+- This triggers CUDA initialization during import, which fails on the CPU-only login node
+- **This is not a real error** — imports will succeed on a compute node with GPU
+
+### [DECISION] Skip login-node import test
+Import correctness will be validated implicitly when the batch job runs on a GPU node.
+Proceeding to weight download (Phase 2.9).

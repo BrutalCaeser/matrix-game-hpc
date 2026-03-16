@@ -105,6 +105,8 @@ ls -lh /scratch/gupta.yashv/matrix-game/Matrix-Game-2.0/
 After running all checks, report which items **PASS** and which **FAIL**.
 Only run Phase 2 steps for failed items.
 
+> **NOTE (confirmed 2026-03-15):** The import test `python -c "import pipeline; import wan; import utils"` **cannot be run on the login node**. `wan/modules/t5.py` calls `torch.cuda.current_device()` at class definition time, which requires a real GPU. This test must be skipped on login nodes — import correctness is validated by the batch job in Phase 4.
+
 ---
 
 ## Phase 2 — Fix Missing Pieces
